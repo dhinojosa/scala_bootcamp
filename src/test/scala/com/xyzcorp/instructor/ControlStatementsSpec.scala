@@ -19,7 +19,11 @@ class ControlStatementsSpec extends FunSuite with Matchers {
   }
 
   test("Case 2: if, else if, else functional. Notice that this uses all vals") {
-     pending
+    val a = 10
+    val result = if (a < 10) "Less than 10"
+                 else if (a > 10) "Greater than 10"
+                 else "It is 10!"
+    result should be ("It is 10!")
   }
 
   test("""Case 3: while loop, underused, but still used by API developers,
@@ -66,6 +70,7 @@ class ControlStatementsSpec extends FunSuite with Matchers {
   }
 
   test("Case 7: Create a simple for comprehension") {
-    pending
+      val z = for (x <- 1 to 10) yield x + 1
+      z should contain inOrder (2,3,4,5,6,7,8,9,10,11)
   }
 }

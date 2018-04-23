@@ -36,7 +36,7 @@ class StringsSpec extends FunSuite with Matchers {
                    I see them bloom,
                    for me and you,
                    and I think to myself,
-                   what I wonderful world"""
+                   what a wonderful world"""
     """\s{2,}""".r.findAllIn(prose) should not be 'empty
   }
 
@@ -75,21 +75,28 @@ class StringsSpec extends FunSuite with Matchers {
 
   test("Lab: String Interpolation") {
      val a = 99
-     //val result:String = ???
-     //result should be (s"$a luftballoons floating in the summer sky")
-     pending
+     val result:String = s"${a+1} luftballoons floating in the summer sky"
+     result should be ("100 luftballoons floating in the summer sky")
   }
 
+
+  test("Lab:String Interpolation using a smart string") {
+    val a = 99
+    val result =
+      s"""$a luftbaloons
+          |...floating in the summer sky""".stripMargin
+
+
+  }
   test("""Lab: String Interpolation with the f interpolator.
       |  The f interpolator will use formatting with interpolation
       |  for example $firstName%s would treat first name as a string, $$ for
       |  dollar sign and $myPrice%1.2f for a floating point.
       |  """.stripMargin) {
     val ticketsCost = 50
-    val bandName = "Psychedelic Furs"
-    //val result:String = ???
-    //result should be ("The Psychedelic Furs tickets are probably $50.00")
-    pending
+    val bandName = 404
+    val result = f"The $bandName tickets are probably $$$ticketsCost%2.2f"
+    result should be ("The 404 tickets are probably $50.00")
   }
 
   test("""Lab: Formatting and Interpolating, turn the following in a the
@@ -105,10 +112,10 @@ class StringsSpec extends FunSuite with Matchers {
     val bandName = "Psychedelic Furs"
     val percentIncrease = 20
     val musicGenre = "New Wave"
+    val result:String =
+      f"""The $bandName tickets are probably $$$ticketsCost%1.2f
+         |That's a $percentIncrease%% bump because everyone likes $musicGenre""".stripMargin
+    result should be ("The Psychedelic Furs tickets are probably $50.00\nThat's a 20% bump because everyone likes New Wave")
 
-    //val result:String = ???
-    //result should be ("The Psychedelic Furs tickets are probably $50.00\nThat's a 20% bump because everyone likes New Wave")
-
-    pending
   }
 }
