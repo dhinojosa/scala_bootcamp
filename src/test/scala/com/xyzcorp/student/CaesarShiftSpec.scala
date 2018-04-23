@@ -1,4 +1,4 @@
-package com.xyzcorp
+package com.xyzcorp.student
 
 import org.scalatest.{FunSuite, GivenWhenThen, Matchers}
 

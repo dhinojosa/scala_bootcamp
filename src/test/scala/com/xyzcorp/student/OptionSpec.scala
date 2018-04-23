@@ -1,10 +1,9 @@
-package com.xyzcorp
+package com.xyzcorp.student
 
 import org.scalatest.{FunSuite, Matchers}
 
 class OptionSpec extends FunSuite with Matchers {
-   test(
-     """Options are meant to avoid the ambiguities of null
+   test("""Case 1: Options are meant to avoid the ambiguities of null
        |
        | If in a database, the middle name field has a null, does it mean:
        |
@@ -18,11 +17,11 @@ class OptionSpec extends FunSuite with Matchers {
      pending
    }
 
-   test("Using get, which not desireable") {
+   test("Case 2: Using get, which not desireable") {
      pending
    }
 
-   test("Using get or else which works better") {
+   test("Case 3: Using get or else which works better") {
 
    }
 }

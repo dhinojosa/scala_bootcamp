@@ -1,4 +1,4 @@
-package com.xyzcorp
+package com.xyzcorp.student
 
 import org.scalatest.{FunSuite, Matchers}
 
@@ -65,7 +65,7 @@ class ControlStatementsSpec extends FunSuite with Matchers {
     result should be("1,2,3,4,5,6,7,8,9,10")
   }
 
-  test("Lab: Create a simple for comprehension") {
+  test("Case 7: Create a simple for comprehension") {
     pending
   }
 }

@@ -1,13 +1,11 @@
-package com.xyzcorp
-
-import java.time.LocalDate
+package com.xyzcorp.student
 
 import org.scalatest.{FunSuite, Matchers}
 
 import scala.collection.mutable.ArrayBuffer
 
 class TraitsSpec extends FunSuite with Matchers{
-  test("A trait is analogous to an interface in Java") {
+  test("Case 1: A trait is analogous to an interface in Java") {
     trait Vehicle {
       def increaseSpeed(ms: Int): Vehicle
       def decreaseSpeed(ms: Int): Vehicle
@@ -29,7 +27,7 @@ class TraitsSpec extends FunSuite with Matchers{
   }
 
   test(
-    """Just like Java 8 interfaces, you can have concrete
+    """Case 2: Just like Java 8 interfaces, you can have concrete
       |  methods (known as default methods in Java)""".stripMargin) {
     trait Vehicle {
       def increaseSpeed(ms: Int): Vehicle
@@ -50,15 +48,14 @@ class TraitsSpec extends FunSuite with Matchers{
   }
 
 
-  test(
-    """Traits are specifically called that just for mixing in functionality.
+  test("""Case 3: Traits are specifically called that just for mixing in functionality.
       |  Let's create a trait called whoAmI_? that will return a string
       |  of the class simple name and apply to the stamp class""".stripMargin) {
 
     //stamp.whoAmI_?() should be("Stamp")
   }
 
-  test("You can extends from a trait that was not built in to begin with") {
+  test("Case 4: You can extends from a trait that was not built in to begin with") {
     trait Log {
       private val _log: ArrayBuffer[String] = ArrayBuffer[String]()
       def log(s:String):Unit = _log += s
@@ -72,14 +69,13 @@ class TraitsSpec extends FunSuite with Matchers{
     o.entries should contain inOrder("Sent one statement", "Sent two statements")
   }
 
-  test(
-    """extends vs. with, if the class extends from an abstract
+  test("""Case 5: extends vs. with, if the class extends from an abstract
       | class then use with, otherwise extend from trait.
       | Try the Introspection with Baseball Card""".stripMargin) {
     pending
   }
 
-  test("Avoiding the diamond of death") {
+  test("Case 6: Avoiding the diamond of death") {
     var list = List[String]()
 
     trait T1 {
@@ -106,7 +102,7 @@ class TraitsSpec extends FunSuite with Matchers{
     pending
   }
 
-  test("Stackable traits") {
+  test("Case 7: Stackable traits") {
 
     abstract class IntQueue {
       def get(): Int
@@ -151,7 +147,7 @@ class TraitsSpec extends FunSuite with Matchers{
     pending
   }
 
-  test("Self types") {
+  test("Case 8: Self types") {
     trait Moveable {
       def increaseSpeed(ms: Int): Moveable
       def decreaseSpeed(ms: Int): Moveable
@@ -176,7 +172,7 @@ class TraitsSpec extends FunSuite with Matchers{
     car.make should be ("Peugeot")
   }
 
-  test("""A sealed trait is a trait that will have children,
+  test("""Case 9: A sealed trait is a trait that will have children,
          |  but it will define all it's children and not one else will have the
          |  ability to extend the number of children any further. All children
          |  must be produced within the same file. This will also create what
@@ -185,8 +181,7 @@ class TraitsSpec extends FunSuite with Matchers{
     pending
   }
 
-  test(
-    """You can also have sealed abstract classes, which will operate under
+  test("""Case 10: You can also have sealed abstract classes, which will operate under
       |  the same rules, the children must all be inside the same file,
       |  and the children should be final. Why would you choose
       |  one over the other? You can multiple inherit a trait and mixin traits.
@@ -196,12 +191,12 @@ class TraitsSpec extends FunSuite with Matchers{
      pending
   }
 
-  test("""A popular sealed abstract class is Also List[A], ::,
+  test("""Case 11: A popular sealed abstract class is Also List[A], ::,
          |  and Nil let's take a look at the API.""".stripMargin) {
     pending
   }
 
-  test("""Sealed traits are also a good idea for pattern matching
+  test("""Case 12: Sealed traits are also a good idea for pattern matching
          |  exhaustiveness. The compiler will be able to recognize the subclasses
          |  of all sealed traits. Let's perform pattern matching on the Node,
          |  Leaf and Empty""".stripMargin) {
