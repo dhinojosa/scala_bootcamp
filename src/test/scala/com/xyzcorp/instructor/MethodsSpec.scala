@@ -2,19 +2,26 @@ package com.xyzcorp.instructor
 
 import org.scalatest.{FunSuite, Matchers}
 
+import scala.annotation.tailrec
+
 class MethodsSpec extends FunSuite with Matchers {
   test("Case 1: A method is structured like the following:") {
-    pending
+    def add(x:Int, y:Int):Int = {
+      return x + y
+    }
+
+    add(4, 5) should be (9)
   }
 
   test("Case 2: Also a method can be inlined if there is only one statement:") {
-    pending
+    def add(x:Int, y:Int) = x + y
+    add(4, 5) should be (9)
   }
 
   test("""Case 3: Methods can be embedded, in case one method is
       |  exclusively only being used by another""".stripMargin) {
-    def foo(x: Int, y: Int): Int = {
-      def bar(z: Int): Int = {
+    def foo(x: Int, y: Int) = {
+      def bar(z: Int) = {
         z + 10
       }
       bar(x + y)
@@ -24,8 +31,50 @@ class MethodsSpec extends FunSuite with Matchers {
   }
 
   test("""Case 4: Recursion is supported just like another language,
-      |  we can do a factorial using recursion""".stripMargin) {
-    pending
+      |  we can do a factorial using recursion.""".stripMargin) {
+
+    def factorial(n:Int):Int = {
+      require(n >= 0)
+      if (n == 0) 1
+      else n * factorial(n - 1)
+    }
+
+
+    factorial(0) should be (1)
+    factorial(1) should be (1)
+    factorial(2) should be (2)
+    factorial(3) should be (6)
+    factorial(4) should be (24)
+
+    a [IllegalArgumentException] should be thrownBy {
+      factorial(-1)
+    }
+  }
+
+
+  test("""Case 4.5: Recursion is supported just like another
+         | language,
+         | we can do a factorial using tail recursion.""".stripMargin) {
+
+    def factorial(i: Int):Int = {
+      require(i >= 0)
+      @tailrec
+      def fact(n: Int, acc: Int): Int =
+        if (n == 0) acc
+        else fact(n - 1, n * acc)
+      fact(i, 1)
+    }
+
+
+    factorial(0) should be (1)
+    factorial(1) should be (1)
+    factorial(2) should be (2)
+    factorial(3) should be (6)
+    factorial(4) should be (24)
+
+    a [IllegalArgumentException] should be thrownBy {
+      factorial(-1)
+    }
   }
 
   test("""Case 5: Multi-parameter lists are groups or argument lists,
@@ -37,16 +86,70 @@ class MethodsSpec extends FunSuite with Matchers {
     multiParameters(10)(20)("<<", ">>") should be ("<<30>>")
   }
 
+  test("""Case 5.1 Multi-parameter with partial application""".stripMargin) {
+    def multiParameters(w:Int)(x:Int)(y:String, z:String) = {
+      y + (w + x) + z
+    }
+
+    val a = multiParameters(10)(20)_
+    a("??", "??")
+  }
+
+  test(
+    """Case 5.2 Multi-parameter with partial application
+      | partially apply the middle int""".stripMargin) {
+    def multiParameters(w:Int)(x:Int)(y:String, z:String) = {
+      y + (w + x) + z
+    }
+
+    val a = multiParameters(10)(_:Int)("<<", ">>")
+    a(40)
+  }
+
+  test(
+    """Case 5.3 Multi-parameter with partial application
+      | partially apply the middle int""".stripMargin) {
+    def multiParameters(w:Int)(x:Int)(y:String, z:String) = {
+      y + (w + x) + z
+    }
+
+    val a = multiParameters(_:Int)(_:Int)("<<", ">>")
+    a(30,40) should be ("<<70>>")
+  }
+
+
+  test(
+    """Case 5.3 Multi-parameter partially apply everything""".stripMargin) {
+    def multiParameters(w:Int)(x:Int)(y:String, z:String) = {
+      y + (w + x) + z
+    }
+
+    val a = multiParameters _
+    a(10)(30)("??", "??")
+  }
+
+  test(
+    """Case 5.3 Multi-parameter partially from all four""".stripMargin) {
+    def multiParameters(w:Int, x:Int, y:String, z:String) = {
+      y + (w + x) + z
+    }
+
+    val a = multiParameters(_:Int, _:Int, "<<", ">>")
+    a(10,30) should be ("<<40>>")
+  }
 
   test("""Case 6: Repeated parameters are the equivalent of varargs in Java, they
       |  allow additional parameters and inside the method they
       |  are just a collection called WrappedArray""".stripMargin) {
 
-    def varargs[A, B](arg1: A, rest: B*) = {
-      s"arg1=$arg1, rest=$rest"
+    def varargs[A, B](x: A, ys: B*) = {
+      s"arg1=$x, rest=$ys"
     }
 
-    pending
+    varargs(10, "Foo", "Bar", "Baz") should be ("arg1=10, " +
+      "rest=WrappedArray(Foo, Bar, Baz)")
+
+    varargs(10, "Foo":_*) should be ("arg1=10, rest=Foo")
   }
 
   test("""Case 7: Repeated parameters can be sent a list or any other collection,
@@ -54,15 +157,32 @@ class MethodsSpec extends FunSuite with Matchers {
       |  it would treat it as a single unit instead you can expand the units
       |  with a :_*""".stripMargin) {
 
-    def varargs[A, B](arg1: A, rest: B*) = {
-      s"arg1=$arg1, rest=$rest"
+    def varargs[A, B](x: A, ys: B*) = {
+      s"arg1=$x, rest=$ys"
     }
 
-    pending
+    varargs(10.0, List(1, 2, 3, 4):_*) should be ("arg1=10.0, " +
+      "rest=List(1, 2, 3, 4)")
   }
 
   test("Case 8: Generics with methods: Convert the following with generics") {
-    def decide(b:Boolean, x:Any, y:Any):Any = if (b) x else y
+    def decide[A](b:Boolean, x:A, y:A):A = if (b) x else y
+
+
+    val result0: AnyVal = decide[AnyVal](true, 10, 40)
+    val result1: Int = decide(true, 10, 40)  //Preferred
+    result1
+  }
+
+  test("Case 8.1: Generics with methods: Convert the following with generics") {
+    def decide[A, B](b:Boolean, x:A, y:B):Option[(A, B)] =
+      if (b) Some(x,y) else None
+
+    val maybeTuple1: Option[(Double, String)] = decide(true, 3.0, "Foo")
+    val maybeTuple2: Option[(Option[Int], Char)] =
+      decide(true, Some(30):Option[Int], 'a')
+
+    maybeTuple2.getOrElse((None,'a'))
   }
 
   test("""Case 9: Default methods have just methods that have a value
@@ -72,6 +192,21 @@ class MethodsSpec extends FunSuite with Matchers {
       |  explicitly by the name to avoid any confusion as to what you
       |  are setting""".stripMargin) {
 
-    pending
+    class Employee(firstName:String,
+                   middleName: Option[String] = None,
+                   lastName:String)
+
+    def createEmployeeNoMiddleName(firstName:String,
+                                   lastName:String) = {
+      new Employee(firstName, middleName = None, lastName)
+    }
+  }
+
+  test("Case 10: Careful with types") {
+    def numberStatus(x:Int) = {
+      if (x > 10) "Greater than 10"
+      else if (x < 10) "Less than 10"
+      else 10
+    }
   }
 }

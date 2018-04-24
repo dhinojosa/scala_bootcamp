@@ -14,14 +14,30 @@ class OptionSpec extends FunSuite with Matchers {
        |Option[+A] is the super type of Some[T] and None
        |Option[+A] is an abstract class""".stripMargin) {
 
-     pending
+     val connorMiddleName:Option[String] = Some("Sean")
+     val dannoMiddleName:Option[String] = None
    }
 
    test("Case 2: Using get, which not desireable") {
-     pending
+     val connorMiddleName:Option[String] = Some("Sean")
+     val dannoMiddleName:Option[String] = None
+
+     connorMiddleName.get should be ("Sean")
+
+     a [NoSuchElementException] should be thrownBy {
+       dannoMiddleName.get
+     }
    }
 
-   test("Case 3: Using get or else which works better") {
+   test("Case 3: Using getorElse which works better") {
 
+     type OptionalMiddleName = Option[String]
+
+     val connorMiddleName:OptionalMiddleName = Some("Sean")
+     val dannoMiddleName:OptionalMiddleName = None
+
+     connorMiddleName.getOrElse("N/A") should be ("Sean")
+     val any:Any = dannoMiddleName.getOrElse(1)
+     val str:String = dannoMiddleName.getOrElse("N/A")
    }
 }
