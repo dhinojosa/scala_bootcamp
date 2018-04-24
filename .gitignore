@@ -515,3 +515,4 @@ project/plugins/project/
 project/build.properties
 .idea
 *.iml
+.cache-tests
