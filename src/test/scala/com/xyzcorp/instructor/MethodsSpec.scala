@@ -202,11 +202,14 @@ class MethodsSpec extends FunSuite with Matchers {
     }
   }
 
-  test("Case 10: Careful with types") {
+  test("""Case 10: Careful with types and what gets returned,
+      | numberStatus in this case will return Any""".stripMargin) {
     def numberStatus(x:Int) = {
       if (x > 10) "Greater than 10"
       else if (x < 10) "Less than 10"
       else 10
     }
+
+    numberStatus(10)
   }
 }
