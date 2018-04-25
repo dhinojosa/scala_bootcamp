@@ -2,6 +2,8 @@ package com.xyzcorp.instructor
 
 import org.scalatest.{FunSuite, Matchers}
 
+import scala.collection.immutable
+
 class FunctionsSpec extends FunSuite with Matchers {
 
 
@@ -278,18 +280,33 @@ class FunctionsSpec extends FunSuite with Matchers {
                         lastName: String,
                         salary:Int)
 
-    val automotive = Department("Automotive",
+    val automotive: Department = Department("Automotive",
       Vector(Employee("Diane", "Lancaster", 65000),
              Employee("Adam", "Viscount", 55000),
              Employee("Sandeep", "Agarwal", 56000)))
 
-    val kitchen = Department("Kitchen", Vector(Employee("Ralph", "Quintana", 44000),
+    val kitchen: Department = Department("Kitchen",
+                                               Vector(Employee("Ralph", "Quintana", 44000),
                                                Employee("Rolland", "Chabot", 44300)))
 
-    val list = List(automotive, kitchen)
+    val list:List[Department] = List(automotive, kitchen)
+
+    //average for all employees, not per department, .size for count
+    val employeeList: Seq[Employee] = list.flatMap(dept => dept.employees)
+
+    val salaries = employeeList.map(e => e.salary)
+
+    val average = salaries.sum / salaries.size
 
 
-    list.
+    //Challenge Acceptance
+    val result2 = list
+      .map(d => d.employees.size -> d.employees.map(e => e.salary).sum)
+      //.map(t => t._2 / t._1)
+        .map{case (sz, sm) => sm /sz}
+
+    average should be (result2)
+
 
 
 
@@ -304,13 +321,12 @@ class FunctionsSpec extends FunSuite with Matchers {
           |
           |""".stripMargin) {
 
-    pending
-    
     val origMap = Map(1 -> "One",
-      2 -> "Two",
-      3 -> "Three")
+                      2 -> "Two",
+                      3 -> "Three")
 
-    val result:Map[Int, String] = ???
+    val result:Map[Int, String] = origMap.flatMap(t =>
+              Map(t._1 -> t._2, (t._1 * 100) -> (t._2 + " Hundred")))
 
     result should be (Map(1 -> "One", 2 -> "Two", 3 -> "Three",
                           300 -> "Three Hundred", 200 -> "Two Hundred",
@@ -343,7 +359,6 @@ class FunctionsSpec extends FunSuite with Matchers {
       |  since the return type is Unit, which
       |  is like a void return type in Java, C++""".stripMargin) {
 
-    pending
 
     List(1, 2, 3).foreach(println)
   }
@@ -351,12 +366,29 @@ class FunctionsSpec extends FunSuite with Matchers {
   test("""Case 24: groupBy will categorize a collection by a function, and return a
       |  map where the keys were derived by that function""".stripMargin) {
 
-    pending
-
     val lyrics = List(
-      "I see trees of green", "Red roses too",
+      "I see trees of green",
+      "Red roses too",
       "I see them bloom",
-      "for me and you")
+      "for me and you",
+      "And I think to myself",
+      "What a wonderful world")
+
+    val map: Map[Char, immutable.Seq[String]] =
+      lyrics
+        .flatMap(_.split(" "))
+        .map(_.toLowerCase)
+        .groupBy(w => w.head)
+
+    val wordCount = lyrics
+      .flatMap(_.split(" "))
+      .map(_.toLowerCase)
+      .groupBy(identity)
+      .mapValues(_.size)
+      .toList
+      .sortBy {case (_, n) => n}
+      //.sortBy(t => t._2)
+    wordCount
 
   }
 
@@ -368,7 +400,25 @@ class FunctionsSpec extends FunSuite with Matchers {
 
   test("""Case 26: collect will apply a partial function to all elements
       |  and will return a different collection.""".stripMargin) {
-    pending
+    val doubleEvens:PartialFunction[Int, Int] = new PartialFunction[Int, Int] {
+      override def isDefinedAt(x: Int): Boolean = x % 2 == 0
+      override def apply(v1: Int): Int = v1 * 2
+    }
+
+    val tripleOdds:PartialFunction[Int, Int] = new PartialFunction[Int, Int] {
+      override def isDefinedAt(x: Int): Boolean = x % 2 != 0
+      override def apply(v1: Int): Int = v1 * 3
+    }
+
+    val doubleEvens2:PartialFunction[Int, Int] =
+                    {case x:Int if x % 2 == 0 => x * 2}
+
+    val tripleOdds2:PartialFunction[Int, Int] =
+                    {case x:Int if x % 2 != 0 => x * 3}
+
+    val doubleEvensOrTripleOdds = doubleEvens2 orElse tripleOdds2
+
+    doubleEvensOrTripleOdds.apply(5) should be (15)
   }
 
   test("""Case 27: scan is like a reduce but maintains a running total
