@@ -7,22 +7,70 @@ class FunctionsSpec extends FunSuite with Matchers {
 
   test("""Case 1: A function really is an anonymous
       |  instantiation of a trait.""".stripMargin) {
-    pending
+
+    val f = new Function1[String, Int] {
+      override def apply(v1: String): Int = v1.length
+    }
+
+    f.apply("Robert") should be (6)
+    f("Robert") should be (6)
   }
 
   test("Case 2: The above can be whittled down to x => f(x):") {
-    pending
+    //All these are the same thing
+    val f = (s:String) => s.length
+    f.apply("Robert") should be (6)
+    f("Robert") should be (6)
+  }
+
+  test("Case 2.1: Function2 the hard way") {
+    val f2 = new Function2[String, Int, String] {
+      override def apply(v1: String,
+                         v2: Int): String = "String:" + v1 + v2
+    }
+
+    f2("Foo", 12) should be ("String:Foo12")
+  }
+
+  test("Case 2.2: Function2 the nice way") {
+    val f2 = (v1: String, v2: Int) => "String:" + v1 + v2
+    f2("Foo", 12) should be ("String:Foo12")
+  }
+
+  test("Case 2.3: Function2 multiline") {
+    val f2 = (v1: String, v2: Int) => {
+      val result = v1 + v2
+      "String:" + result
+    }
+    f2("Foo", 12) should be ("String:Foo12")
   }
 
   test("""Case 3: If you declare the left hand side you
       |  don't need to declare the right:""".stripMargin) {
-    pending
+
+    val f1:Function1[String, Int] = s => s.length
   }
 
-  test("""Case 4: Also, since the left hand side, has all the type information,
-      |  on the right hand side you can trim the left hand side
-      |  with syntactical tricks like use the placeholder""".stripMargin) {
-    pending
+  test("""Case 4: Also, since the left hand side,
+      |  has all the type information,
+      |  on the right hand side you can
+      |  trim the right hand side
+      |  with syntactical tricks
+      |  like use the placeholder, _""".stripMargin) {
+
+    val f1:Function1[String, Int] = _.length
+    val f2:String => Int = _.length
+  }
+
+  test("""Case 4.1 Function2 with a place holder""") {
+    val f2_1:Function2[Int, Int, Int] = (x,y) => x + y
+    f2_1.apply(40, 50) should be (90)
+
+    val f2_2:(Int, Int) => Int = (x,y) => x + y
+    f2_2(40, 50) should be (90)
+
+    val f2_3:(Int, Int) => Int = _ + _
+    f2_3(40, 50) should be (90)
   }
 
   test("""Case 5: If the type system has enough information either because
@@ -32,7 +80,16 @@ class FunctionsSpec extends FunSuite with Matchers {
       |  can drop the underline and leave 5+, but will come with some warnings
       |  that you can turn off with """.stripMargin) {
 
-    pending
+    import scala.language.postfixOps
+
+    val add3_1: Int => Int = x => 3 + x
+    add3_1(5) should be (8)
+
+    val add3_2: Int => Int = 3 + _
+    add3_2(4) should be (7)
+
+    val add3_3:Int => Int = 3+
+    //add3_3(10) should be (13) //Bug
   }
 
   test("""Case 6: A closure is a function that will "wrap" or "close"
@@ -41,19 +98,16 @@ class FunctionsSpec extends FunSuite with Matchers {
       (x: Int) => x + i
     }
 
-    Vector(1, 2, 3).map(createFunction(5)) should contain inOrder(6, 7, 8)
+    createFunction(4)(5) should be (9)
   }
 
   test("""Case 7: We will create a method called is,
-          |  that will take a number of seconds,
+          |  that will take a number,
           |  and a function that will be invoked
-          |  after those seconds.""".stripMargin) {
-
-    pending
-
+          |  and be given a boolean.""".stripMargin) {
 
     object MyFunctions {
-      def lessThan(x:Int):Int => Boolean = ???
+      def lessThan(x:Int):Int => Boolean = (z:Int) => z < x
     }
 
     val isFreezingCelcius = MyFunctions.lessThan(0)
@@ -62,7 +116,8 @@ class FunctionsSpec extends FunSuite with Matchers {
     isFreezingCelcius.apply(25) should be (false)
   }
 
-  test("""Case 8: Closure have some particular implications. One such implication
+  test("""Case 8: Closure have some particular implications.
+      |  One such implication
       |  is called currying. Currying will break a function of one or
       |  more arguments into parts so that they can be applied
       |  partially""".stripMargin) {
@@ -73,8 +128,7 @@ class FunctionsSpec extends FunSuite with Matchers {
     val fc: Int => Int => Int => Int = f.curried
     val f1: Int => Int => Int = fc(3)
     val f2: Int => Int = f1(4)
-    val f3: Int = f2(10)
-    f3 should be(17)
+    foo(f2) should be(47)
 
     val manuallyCurried = (x: Int) => (y: Int) => (z: Int) => x + y + z
     manuallyCurried(3)(4)(10) should be(17)

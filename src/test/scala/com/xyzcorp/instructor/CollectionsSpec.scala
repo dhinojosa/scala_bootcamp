@@ -59,20 +59,47 @@ class CollectionsSpec extends FunSuite with Matchers {
       |  The construction can
       |  be done using recursion. Here we will
       |  make some continous evens""".stripMargin) {
-    pending
+
+      def continuousEvens(n:Int):Stream[Int] = {
+        Stream.cons(n, continuousEvens(n + 2))
+      }
+
+      continuousEvens(4).take(5).mkString(",") should be ("4,6,8,10,12")
   }
 
   test(
-    """Case 8: Another way we can write the above Stream  is using is using the
+    """Case 8: Another way we can write the above Stream  is using
+      |   is using the
       |  #:: operator""".stripMargin) {
-    pending
+
+    def continuousEvens(n:Int):Stream[Int] = n #:: continuousEvens(n + 2)
+
+    continuousEvens(4).take(5).mkString(",") should be ("4,6,8,10,12")
+  }
+
+
+  test(
+    """Case 8.1: Operation Stream factorials""".stripMargin) {
+
+    def factorial(n:Int) = {
+      def recurseFact(currentIndex: Int, acc: Int): Stream[Int] =
+        acc #:: recurseFact(currentIndex + 1, currentIndex * acc)
+
+      recurseFact(1, 1).drop(1)(n -1)
+    }
+
+    factorial(5) should be (120)
   }
 
   test("""Case 9: An array is a java based array with a Scala wrapper
       |  around it to perform the functionality.
       |  Use getClass.getSimpleName to verify, also use reverse to try a
       |  method that is unavailable in Java""".stripMargin) {
-    pending
+
+    val arrays = Array(1,2,3,4)
+    arrays.apply(2)
+    arrays.head
+
   }
 
   test("""Case 10: Whereas a List is a LIFO, a Queue is a FIFO just like a
@@ -100,7 +127,20 @@ class CollectionsSpec extends FunSuite with Matchers {
   }
 
   test("""Case 13: A Map is a collection of pairs, also known as Tuple2""".stripMargin) {
-    pending
+    val map3 = Map("Seattle" -> "Sounders", "LA" -> "Galaxy",
+                   "LA" -> "FC", "NY" -> "Red Bulls")
+
+    map3.apply("Seattle") should be ("Sounders")
+
+    //Why apply is not preferrable
+    a [NoSuchElementException] should be thrownBy {
+      map3.apply("Omaha")
+    }
+
+    val result = map3.get("Omaha") match {
+                   case Some(s) => s"The team is $s"
+                   case None => "Huh?"
+                 }
   }
 
   test("""Case 14: There are also mutable collections. Though much of the Scala
