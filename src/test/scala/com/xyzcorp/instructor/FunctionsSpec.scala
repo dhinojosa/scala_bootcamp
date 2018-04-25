@@ -140,12 +140,10 @@ class FunctionsSpec extends FunSuite with Matchers {
       |  therefore f(a) to get result b.  But these functions can be
       |  applied together to form one cohesive function""".stripMargin) {
 
-    pending
-
     val tupleFirst: ((String, Int)) => String = (t: (String, Int)) => t._1
     val getFirstThreeLetters = (s: String) => s.substring(0, 3)
 
-    val newFunction: ((String, Int)) => String = ???
+    val newFunction: ((String, Int)) => String =  getFirstThreeLetters.compose(tupleFirst)
     newFunction("Fellow" -> 100) should be("Fel")
   }
 
@@ -153,14 +151,14 @@ class FunctionsSpec extends FunSuite with Matchers {
       |  then g is then applied. In the following example we
       |  recreate the compose but using andThen""".stripMargin) {
 
-    pending
-
     val tupleFirst = (t: (String, Int)) => t._1
     val getFirstThreeLetters = (s: String) => s.substring(0, 3)
 
-    val newFunction: ((String, Int)) => String = ???
+    val newFunction: ((String, Int)) => String =
+        tupleFirst.andThen(getFirstThreeLetters)
     newFunction.apply("Fellow", 100) should be("Fel")
   }
+
 
   test("""Case 11: Map will apply the given function on all elements of a
       |  Traversable and return a new collection
@@ -168,6 +166,13 @@ class FunctionsSpec extends FunSuite with Matchers {
     val vector = Vector(1, 3, 4, 6)
     val result = vector.map(x => x * 4)
     result should be(List(4, 12, 16, 24)) //4
+  }
+
+  test("""Case 11.1 Caesar Shift: using closure, map""") {
+    def caesarShift(n:Int):String => String = _.map(c => (c + n).toChar)
+
+    val caesarShiftOf1 = caesarShift(1)
+    caesarShiftOf1("Foo") should be ("Gpp")
   }
 
   test("""Case 12: Map can be applied to a Stream, it is just another collection""") {
@@ -199,31 +204,70 @@ class FunctionsSpec extends FunSuite with Matchers {
       |  will contain a seed and then a function that will
       |  aggregate the collection into one.""".stripMargin) {
 
-    pending
+    val result = List(1,2,3,4,5).foldLeft(0)((total: Int, next:Int) => {
+      println(s"total: $total, next: $next")
+      total + next
+    })
+
+    result should be (15)
+
+    val result2 = List(1,2,3,4,5).foldLeft(0)(_ + _)
+
+    result2 should be (15)
+
+    def factorial(n:Int) = Stream.from(1).take(n).foldLeft(1)(_ * _)
+
+    factorial(5) should be (120)
+  }
+
+  test("""Case 15.1: foldRight""") {
+    val result = List(1,2,3,4,5).foldRight(0)((next:Int, total: Int) => {
+      println(s"total: $total, next: $next")
+      total + next
+    })
+
+    result should be (15)
   }
 
   test("""Case 16: reduce will collapse all elements of a collection using a function.
       |  It will start the first element as the 'seed' or 'accumulation"""
       .stripMargin) {
 
-    pending
+    val result = Vector(4,5,6).reduce(_ + _)
+    result should be (15)
+
+    val result2 = Vector(4,5,6).reduce((total, next) => total + next)
+  }
+
+  test("""Case 16: reduceRight""") {
+    val result = Vector(4,5,6).reduceRight((next:Int, total: Int) => {
+      println(s"total: $total, next: $next")
+      total + next
+    })
+
+    result should be (15)
   }
 
   test("""Case 17: flatMap will not only apply the given function on all
       |  elements of a Traversable,
       |  but all elements within the elements
       |  and flatten the results""".stripMargin) {
-    pending
+
+    List(1,2,3).flatMap(x => List(-x, x, x+1))
+
+    (1 to 10).flatMap(x => ('a' to 'c').map(y => (x,y)))
   }
 
   test("""Case 18: A flatMap will take a function that returns
          |  a TraversableOnce like List, Set, Map, and will
          |  combine or flatten the results.""".stripMargin){
-    pending
     val list:List[List[List[Int]]] =
       List(List(List(1,2,3), List(4,5,6)),
         List(List(7,8,9), List(10,11,12)))
-    val result1 = list.flatMap(???)
+
+
+    val result1 = list.flatMap(identity) //identity = x => x
+
   }
 
   test("""Case 19: Find the average salary of employees of two departments
@@ -234,15 +278,21 @@ class FunctionsSpec extends FunSuite with Matchers {
                         lastName: String,
                         salary:Int)
 
-    val automotive = Department("Automotive", Vector(Employee("Diane", "Lancaster", 65000),
-      Employee("Adam", "Viscount", 55000),
-      Employee("Sandeep", "Agarwal", 56000)))
+    val automotive = Department("Automotive",
+      Vector(Employee("Diane", "Lancaster", 65000),
+             Employee("Adam", "Viscount", 55000),
+             Employee("Sandeep", "Agarwal", 56000)))
 
     val kitchen = Department("Kitchen", Vector(Employee("Ralph", "Quintana", 44000),
                                                Employee("Rolland", "Chabot", 44300)))
 
     val list = List(automotive, kitchen)
-    pending
+
+
+    list.
+
+
+
   }
 
   test("""Case 20: Using Map with a flatMap. In this lab, use flatMap or map to produce
