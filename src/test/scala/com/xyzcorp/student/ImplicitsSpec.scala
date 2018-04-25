@@ -302,7 +302,8 @@ class ImplicitsSpec extends FunSpec with Matchers {
   }
 
   describe(
-    """Typeclasses are a way of generating or extending behavior using Java-like interfaces,
+    """Typeclasses are a way of generating or extending behavior
+      |  using Java-like interfaces,
       |  but operate as outside.  There is another term for this,
       |  and it's called ad-hoc polymorphism""".stripMargin) {
 
@@ -314,7 +315,8 @@ class ImplicitsSpec extends FunSpec with Matchers {
       pending
     }
 
-    it("Case 25: can be used for ordering, in this case how do we sort an Employee") {
+    it("""Case 25: can be used for ordering, in this case
+          |   how do we sort an Employee""".stripMargin) {
       case class Employee(firstName: String, lastName: String)
       pending
     }

@@ -58,7 +58,7 @@ class StringsSpec extends FunSuite with Matchers {
                   @and I think to myself,
                   @what I wonderful world""".stripMargin('@')
 
-    pending
+    """\s{2,}""".r.findAllIn(prose) should be ('empty)
   }
 
   test("Case 8: Smart Strings with stripMargin using format") {
@@ -68,7 +68,6 @@ class StringsSpec extends FunSuite with Matchers {
                   |for me and you,
                   |and I think to myself,
                   |what I wonderful world""".stripMargin.format("green", "Red")
-
     """\s{2,}""".r.findAllIn(prose) should be ('empty)
     prose should not contain "%s"
   }
@@ -100,14 +99,14 @@ class StringsSpec extends FunSuite with Matchers {
   }
 
   test("""Lab: Formatting and Interpolating, turn the following in a the
-          | statement using f interpolation:
+          |  statement using f interpolation:
           |
-          | The Psychedelic Furs tickets are probably $50.00
-          | That's a 20% bump because everyone likes New Wave
+          |  The Psychedelic Furs tickets are probably $50.00
+          |  That's a 20% bump because everyone likes New Wave
           |
-          | Use: http://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html
-          | for reference
-          | """) {
+          |  Use: http://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html
+          |  for reference
+          | """.stripMargin) {
     val ticketsCost = 50
     val bandName = "Psychedelic Furs"
     val percentIncrease = 20

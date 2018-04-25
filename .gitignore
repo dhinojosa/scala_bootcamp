@@ -516,3 +516,9 @@ project/build.properties
 .idea
 *.iml
 .cache-tests
+
+# Ensime
+.ensime
+.ensime_cache/index-2.0.4/segments_1
+.ensime_cache/index-2.0.4/write.lock
+project/.ensime

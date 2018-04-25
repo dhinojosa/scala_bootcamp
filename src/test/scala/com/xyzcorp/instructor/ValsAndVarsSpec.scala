@@ -19,7 +19,8 @@ class ValsAndVarsSpec extends FunSuite with Matchers {
     a should be (19)
   }
 
-  test("Case 4: A lazy val is a val that will not be evaluated, run this in REPL for understanding") {
+  test("""Case 4: A lazy val is a val that will not be evaluated,
+      |  run this in REPL for understanding""".stripMargin) {
     lazy val a = {println("evaluated"); 5}
     println(a)
   }

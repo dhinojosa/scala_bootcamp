@@ -70,8 +70,8 @@ class TraitsSpec extends FunSuite with Matchers{
   }
 
   test("""Case 5: extends vs. with, if the class extends from an abstract
-      | class then use with, otherwise extend from trait.
-      | Try the Introspection with Baseball Card""".stripMargin) {
+      |  class then use with, otherwise extend from trait.
+      |  Try the Introspection with Baseball Card""".stripMargin) {
     pending
   }
 

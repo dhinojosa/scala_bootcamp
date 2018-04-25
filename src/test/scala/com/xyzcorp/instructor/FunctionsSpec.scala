@@ -7,16 +7,15 @@ class FunctionsSpec extends FunSuite with Matchers {
 
   test("""Case 1: A function really is an anonymous
       |  instantiation of a trait.""".stripMargin) {
-
     pending
   }
 
-  test("Case 2:The above can be whittled down to x => f(x):") {
+  test("Case 2: The above can be whittled down to x => f(x):") {
     pending
   }
 
   test("""Case 3: If you declare the left hand side you
-      | don't need to declare the right:""".stripMargin) {
+      |  don't need to declare the right:""".stripMargin) {
     pending
   }
 
@@ -46,18 +45,21 @@ class FunctionsSpec extends FunSuite with Matchers {
   }
 
   test("""Case 7: We will create a method called is,
-            that will take a number of seconds,
-            and a function that will be invoked
-            after those seconds.""") {
-
-
-
-    //val isFreezingCelcius = MyFunctions.lessThan(0)
-    //val isFreezingFahrenheit = MyFunctions.lessThan(32)
-    //isFreezingFahrenheit.apply(25) should be (true)
-    //isFreezingCelcius.apply(25) should be (false)
+          |  that will take a number of seconds,
+          |  and a function that will be invoked
+          |  after those seconds.""".stripMargin) {
 
     pending
+
+
+    object MyFunctions {
+      def lessThan(x:Int):Int => Boolean = ???
+    }
+
+    val isFreezingCelcius = MyFunctions.lessThan(0)
+    val isFreezingFahrenheit = MyFunctions.lessThan(32)
+    isFreezingFahrenheit.apply(25) should be (true)
+    isFreezingCelcius.apply(25) should be (false)
   }
 
   test("""Case 8: Closure have some particular implications. One such implication
@@ -84,26 +86,26 @@ class FunctionsSpec extends FunSuite with Matchers {
       |  therefore f(a) to get result b.  But these functions can be
       |  applied together to form one cohesive function""".stripMargin) {
 
+    pending
+
     val tupleFirst: ((String, Int)) => String = (t: (String, Int)) => t._1
     val getFirstThreeLetters = (s: String) => s.substring(0, 3)
 
-    //val newFunction: ((String, Int)) => String = ???
-    //newFunction("Fellow" -> 100) should be("Fel")
-
-    pending
+    val newFunction: ((String, Int)) => String = ???
+    newFunction("Fellow" -> 100) should be("Fel")
   }
 
   test("""Case 10: andThen is g(f(x)).  f(x) is applied first and
       |  then g is then applied. In the following example we
       |  recreate the compose but using andThen""".stripMargin) {
 
+    pending
+
     val tupleFirst = (t: (String, Int)) => t._1
     val getFirstThreeLetters = (s: String) => s.substring(0, 3)
 
-    //val newFunction: ((String, Int)) => String = ???
-    //newFunction.apply("Fellow", 100) should be("Fel")
-
-    pending
+    val newFunction: ((String, Int)) => String = ???
+    newFunction.apply("Fellow", 100) should be("Fel")
   }
 
   test("""Case 11: Map will apply the given function on all elements of a
@@ -160,19 +162,18 @@ class FunctionsSpec extends FunSuite with Matchers {
     pending
   }
 
-  test("""Case 18: Lab: A flatMap will take a function that returns
-         | a TraversableOnce like List, Set, Map, and will
-         | combine or flatten the results."""){
+  test("""Case 18: A flatMap will take a function that returns
+         |  a TraversableOnce like List, Set, Map, and will
+         |  combine or flatten the results.""".stripMargin){
+    pending
     val list:List[List[List[Int]]] =
       List(List(List(1,2,3), List(4,5,6)),
         List(List(7,8,9), List(10,11,12)))
-    //val result1 = list.flatMap(???)
-    //result1 should be (???) uncomment and fill ???
-    pending
+    val result1 = list.flatMap(???)
   }
 
   test("""Case 19: Find the average salary of employees of two departments
-      | using flatMap.""".stripMargin) {
+      |  using flatMap.""".stripMargin) {
 
     case class Department(name: String, employees:Vector[Employee])
     case class Employee(firstName: String,
@@ -191,24 +192,30 @@ class FunctionsSpec extends FunSuite with Matchers {
   }
 
   test("""Case 20: Using Map with a flatMap. In this lab, use flatMap or map to produce
-      |the following:
-      |
-      | Map(1 -> One, 2 -> Two, 3 -> Three, 300 ->
-      | Three Hundred, 200 -> Two Hundred, 100 -> One Hundred)""".stripMargin) {
+          |  the following:
+          |
+          |    Map(1 -> One, 2 -> Two, 3 -> Three,
+          |        300 -> Three Hundred, 200 -> Two Hundred,
+          |        100 -> One Hundred)
+          |
+          |""".stripMargin) {
 
+    pending
+    
     val origMap = Map(1 -> "One",
       2 -> "Two",
       3 -> "Three")
 
-    //val result:Map[Int, String] = ???
+    val result:Map[Int, String] = ???
 
-    //result should be (Map(1 -> "One", 2 -> "Two", 3 -> "Three",
-    //  300 -> "Three Hundred", 200 -> "Two Hundred", 100 -> "One Hundred"))
-
-    pending
+    result should be (Map(1 -> "One", 2 -> "Two", 3 -> "Three",
+                          300 -> "Three Hundred", 200 -> "Two Hundred",
+                          100 -> "One Hundred"))
   }
 
   test("""Case 21: Option and flatMap""") {
+    pending
+
     info("map will render a Some(Some(...))")
     Some(4).map(x => Some(x + 19)) should be (Some(Some(23)))
 
@@ -219,32 +226,34 @@ class FunctionsSpec extends FunSuite with Matchers {
     None.asInstanceOf[Option[Int]].flatMap(x => Some(x + 19)) should be (None)
 
     info("trying with a Some with flatMap that resolves to None")
-    pending
   }
 
   test( """Case 22: flatMap of Options will filter out all Nones and Keep the Somes""") {
     val list = List(1, 2, 3, 4, 5)
     val result = list.flatMap(it => if (it % 2 == 0) Some(it) else None)
     result should be(List(2, 4))
-
-    pending
   }
 
   test("""Case 23: foreach will apply a function to all elements of a Traversable,
       |  but unlike the map function, it will not return anything
       |  since the return type is Unit, which
       |  is like a void return type in Java, C++""".stripMargin) {
+
+    pending
+
     List(1, 2, 3).foreach(println)
   }
 
   test("""Case 24: groupBy will categorize a collection by a function, and return a
       |  map where the keys were derived by that function""".stripMargin) {
+
+    pending
+
     val lyrics = List(
       "I see trees of green", "Red roses too",
       "I see them bloom",
       "for me and you")
 
-    pending
   }
 
   test("""Case 25: mkString will create a string from a
@@ -295,9 +304,9 @@ class FunctionsSpec extends FunSuite with Matchers {
   }
 
   test("""Case 41: Partial Applications with a multi-parameter list
-      | can be knocked out to provide only some of the entries, entries
-      | that you can fill in later. This is how we can convert
-      | a method to a function""".stripMargin) {
+      |  can be knocked out to provide only some of the entries, entries
+      |  that you can fill in later. This is how we can convert
+      |  a method to a function""".stripMargin) {
 
     def multiParameters(w:Int)(x:Int)(y:String, z:String) = y + (w + x) + z
     val function = multiParameters(10)(20)_
@@ -314,14 +323,15 @@ class FunctionsSpec extends FunSuite with Matchers {
 
 
   test("""Case 43: We will use a by name parameter to
-            create a method that will take a block and
-            will return a tuple of the time that it took
-            to execute the block and the block's result""") {
+          |  create a method that will take a block and
+          |  will return a tuple of the time that it took
+          |  to execute the block and the block's result""".stripMargin) {
     pending
   }
 
   test("""Case 44: Look up in the API a function in a collection that interests you,
-      | figure it out with one or more tests, pair with someone if you
-      | would like""".stripMargin) {
+      |  figure it out with one or more tests, pair with someone if you
+      |  would like""".stripMargin) {
+    pending
   }
 }

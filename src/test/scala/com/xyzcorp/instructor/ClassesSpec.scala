@@ -86,9 +86,9 @@ class ClassesSpec extends FunSuite with Matchers {
   }
 
   test("""Case 4: Subclassing. Let's create:
-      |* Sports Card with year, manufacturer, name
-      |* Baseball Card with the same fields Sports Card but adding
-      |  league and division""".stripMargin) {
+      |    * Sports Card with year, manufacturer, name
+      |    * Baseball Card with the same fields Sports Card but adding
+      |      league and division""".stripMargin) {
 
     val baseballCard = new BaseballCard("Ken Griffey Jr", "Topps", 1996,
       "American", "West")
@@ -98,8 +98,8 @@ class ClassesSpec extends FunSuite with Matchers {
   }
 
   test("""Case 5: Abstract Classes. We can also add an abstract class called
-      | Collectible with a field year. Verify that all types are
-      | polymorphic""".stripMargin) {
+      |  Collectible with a field year. Verify that all types are
+      |  polymorphic""".stripMargin) {
 
     val baseballCard = new BaseballCard("Ken Griffey Jr", "Topps", 1996,
       "American", "West")

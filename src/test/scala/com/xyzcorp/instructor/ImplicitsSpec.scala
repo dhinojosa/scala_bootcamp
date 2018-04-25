@@ -4,12 +4,16 @@ import org.scalatest.{FunSpec, Matchers}
 
 class ImplicitsSpec extends FunSpec with Matchers {
 
-  describe("""Implicits is like a Map[Class[A], A] where A is any object and it is tied into the scope,
-      | and it is there when you need it, hence it is implicit. This provide a lot of great techniques that we
-      | can use in Scala.""".stripMargin) {
+  describe("""Implicits is like a Map[Class[A], A] where A is any
+              |  object and it is tied into the scope,
+              |  and it is there when you need it, hence it is implicit.
+              |  This provide a lot of great techniques that we
+              |  can use in Scala.""".stripMargin) {
 
-    it("""Case 1: is done per scope so in the following example, we will begin with an implicit value
-        |  and call it from inside a method which uses a multiple parameter list where one
+    it("""Case 1: is done per scope so in the following example,
+        |  we will begin with an implicit value
+        |  and call it from inside a method which uses
+        |  a multiple parameter list where one
         |  one group would """.stripMargin) {
 
       implicit val rate: Int = 100
@@ -19,8 +23,9 @@ class ImplicitsSpec extends FunSpec with Matchers {
       calculatePayment(50) should be(5000)
     }
 
-    it("""Case 2: will allow you to place something manually, if you want to override the implicit value"""
-        .stripMargin) {
+    it("""Case 2: will allow you to place something manually,
+        |  if you want to override the implicit value""".stripMargin) {
+
       implicit val rate: Int = 100
       //implicit val age:Int = 20
 
@@ -29,7 +34,8 @@ class ImplicitsSpec extends FunSpec with Matchers {
       calculatePayment(50) should be(5000)
     }
 
-    it("""Case 3: will gripe at compile time if there are two implicit bindings of the same type.  It's
+    it("""Case 3: will gripe at compile time if there are two
+        |  implicit bindings of the same type.  It's
         |  worth noting that what Scala doing are compile time tricks for implicit.
         |  One strategy is to wrap a value in a type to avoid conflict"""
         .stripMargin) {
@@ -53,7 +59,8 @@ class ImplicitsSpec extends FunSpec with Matchers {
       pending
     }
 
-    it("""Case 5: can bring up any implicit directly by merely calling up implicitly""") {
+    it("""Case 5: can bring up any implicit directly by merely
+        |   calling up implicitly""".stripMargin) {
 
       case class IceCream(name: String)
       case class Scoops(n: Int, flavor: IceCream)
@@ -74,7 +81,8 @@ class ImplicitsSpec extends FunSpec with Matchers {
       }
     }
 
-    it("""Case 6: the implicit group parameter list, can contain more than one parameter, but
+    it("""Case 6: the implicit group parameter list, can
+        |  contain more than one parameter, but
         |  needs to be in the same implicit parameter group""".stripMargin) {
       implicit val bonus: Int = 5000
       implicit val currency: String = "Euro"
@@ -87,7 +95,8 @@ class ImplicitsSpec extends FunSpec with Matchers {
       calcYearRate(60000) should be("65000 Euro")
     }
 
-    it( """Case 7: can also be replaced with default parameters, choose accordingly""") {
+    it("""Case 7: can also be replaced with default
+        |  parameters, choose accordingly""".stripMargin) {
       def calcYearRate(amount: Int, bonusAmt: Int = 5000,
                        currency: String = "Euro") = {
         amount + bonusAmt + " " + currency
@@ -98,7 +107,7 @@ class ImplicitsSpec extends FunSpec with Matchers {
 
 
     it("""Case 8: If you have a List[String] implicitly will it try
-        || to inject into a List[Double]?""".stripMargin) {
+        |  to inject into a List[Double]?""".stripMargin) {
 
       implicit val listOfString = List("Foo", "Bar", "Baz")
       implicit val listOfDouble = List(1.0, 2.0, 3.0)
@@ -119,24 +128,29 @@ class ImplicitsSpec extends FunSpec with Matchers {
     }
 
 
-    it("""Case 10: Implicit wrappers can be created using a function and is often easier to mental map."""
+    it("""Case 10: Implicit wrappers can be created using a function and
+        |  is often easier to mental map."""
         .stripMargin) {
       pending
     }
 
-    it("""Case 11: can be use a short hand version of this called implicit classes, before using them
+    it("""Case 11: can be use a short hand version of this called
+        |  implicit classes, before using them
         |  there are some rules:
+        |
         |  1. They can only be used inside of an object/trait/class
         |  2. They can only take one parameter in the constructor
         |  3. There can not be any colliding method name as that
-        |     with the implicit outer scope""".stripMargin) {
+        |     with the implicit outer scope
+        |
+        |""".stripMargin) {
 
       pending
     }
 
     it("""Case 12: can also convert things to make it fit into a particular API,
-        | this is called implicit conversion,
-        | in this scenario we will use a method""".stripMargin) {
+        |  this is called implicit conversion,
+        |  in this scenario we will use a method""".stripMargin) {
 
       import scala.language.implicitConversions
 
@@ -154,14 +168,15 @@ class ImplicitsSpec extends FunSpec with Matchers {
     }
 
     it("""Case 13: can also convert things to make it fit into a particular API,
-        | this is called implicit conversion,
-        | in this scenario we will use a function""".stripMargin) {
+        |  this is called implicit conversion,
+        |  in this scenario we will use a function""".stripMargin) {
       pending
     }
 
-    it("""Case 14: is done automatically in Scala because what is inside of scala.Predef, for example,
-        |  it explains how be can set a scala.Float , and there is java.lang.Float,
-        |  java primitive float.
+    it("""Case 14: is done automatically in Scala because what is
+        |  inside of scala.Predef, for example,
+        |  it explains how be can set a scala.Float,
+        |  and there is java.lang.Float, java primitive float.
         |  We can investigate this by looking at
         |  the documentation.""".stripMargin) {
 
@@ -175,8 +190,7 @@ class ImplicitsSpec extends FunSpec with Matchers {
   }
 
   describe("Locating implicits recipes") {
-    it(
-      """Case 15: has a common way, to store that particular implicit
+    it("""Case 15: has a common way, to store that particular implicit
         |  recipe in an object that makes should make
         |  sense and then import that object""".stripMargin) {
 
@@ -196,8 +210,9 @@ class ImplicitsSpec extends FunSpec with Matchers {
       29.isEven should be(false)
     }
 
-    it("""Case 16: can also use a companion object to store any implicit recipes"""
-        .stripMargin) {
+    it("""Case 16: can also use a companion object to
+        |  store any implicit recipes""".stripMargin) {
+
       class Artist(val firstName: String, val lastName: String)
       object Artist {
         import scala.language.implicitConversions
@@ -211,21 +226,26 @@ class ImplicitsSpec extends FunSpec with Matchers {
       playPerformer("Elvis" -> "Presley") should be("Playing now: Elvis Presley")
     }
 
-    it( """Case 17: can also use a package object to store some of these implicits""") {
+    it("""Case 17: can also use a package object to store some
+        |  of these implicits""".stripMargin) {
       def numItems(list: List[String]) = list.mkString(",")
-
       //numItems(3 -> "Whoa") should be("Whoa,Whoa,Whoa")
     }
 
-    it("""Case 18: can use JavaConverters to convert a collection in Java to Scala and vice versa""") {
+    it("""Case 18: can use JavaConverters to convert a collection
+        |  in Java to Scala and vice versa""".stripMargin) {
        pending
     }
   }
 
-  describe("View Bounds are used to ensure that there is a particular recipe for a certain type") {
-    it("""Case 19: Uses <% inside of a parameterized type declaration to determine if there is a conversion available
-        | then within you can treat an object as an object of that type. It is unorthodox, and has since been
-        | deprecated.""".stripMargin) {
+  describe("""View Bounds are used to ensure that there is a " +
+           |particular recipe for a certain type""".stripMargin) {
+
+    it("""Case 19: Uses <% inside of a parameterized type declaration
+        |  to determine if there is a conversion available
+        |  then within you can treat an object as an object of
+        |  that type. It is unorthodox, and has since been
+        |  deprecated.""".stripMargin) {
 
       pending
 
@@ -243,10 +263,12 @@ class ImplicitsSpec extends FunSpec with Matchers {
     }
   }
 
-  describe("""Context Bounds works so that there is a type A, and it requires a B[A] somewhere
-      |  within the the implicit scope, for example like Ordered[T], or TypeTag[T], or Numeric[T],
-      |  this provides a way to check that something is something can be implicitly defined but
-      |  gives the end user no opportunity to the ability to inject a different implementation"""
+  describe("""Context Bounds works so that there is a type A, and
+      |it requires a B[A] somewhere within the the implicit scope,
+      |for example like Ordered[T], or TypeTag[T], or Numeric[T],
+      |this provides a way to check that something is something
+      |can be implicitly defined but gives the end user no opportunity
+      |to the ability to inject a different implementation"""
       .stripMargin) {
 
     it("""Case 20: uses the signature [T:WrappedType], which is
@@ -261,12 +283,16 @@ class ImplicitsSpec extends FunSpec with Matchers {
     }
   }
 
-  describe("""Type Constraints are used to ensure that a particular method can run
-      | if a particular generic is of a certain type, this is typically used for
-      | one method""".stripMargin) {
+  describe("""Type Constraints are used to ensure that a
+            |particular method can run if a particular generic is
+            |of a certain type, this is typically used for
+            |one method""".stripMargin) {
 
-    it("""Case 21: uses one operator, =:= which is actually the full type =:=[A,B] that
+    it("""Case 21: uses one operator, =:= which is actually
+        |  the full type =:=[A,B] that
         |  will to see if something is of the same type""".stripMargin) {
+
+      pending
 
       class MyPair[A, B](val a: A, val b: B) {
         def first: A = a
@@ -275,18 +301,17 @@ class ImplicitsSpec extends FunSpec with Matchers {
 
         def toList: List[A] = ???
       }
-
-      pending
     }
 
     it("""Case 22: Take a look at the API, and see if it uses the operator, <:<
-        |which will test if A is a subtype of B""".stripMargin) {
+        |  which will test if A is a subtype of B""".stripMargin) {
       List(1 -> "One", 2 -> "Two").toMap
     }
   }
 
   describe("Getting around Erasure Using TypeTags") {
-    it("Case 23: used to use Manifest but now uses a type tag to retrieve what is erased") {
+    it("""Case 23: used to use Manifest but now uses
+          |  a type tag to retrieve what is erased""".stripMargin) {
 
       import scala.reflect.runtime.universe._
 
@@ -303,19 +328,22 @@ class ImplicitsSpec extends FunSpec with Matchers {
   }
 
   describe(
-    """Typeclasses are a way of generating or extending behavior using Java-like interfaces,
-      |  but operate as outside.  There is another term for this,
-      |  and it's called ad-hoc polymorphism""".stripMargin) {
+    """Typeclasses are a way of generating or extending
+      |behavior using Java-like interfaces, but operate as outside.
+      |There is another term for this,
+      |and it's called ad-hoc polymorphism""".stripMargin) {
 
-    it("""Case 24: can be used to determine equality, so whether than make equals inside of an class,
-          | it is now an outside concern""".stripMargin) {
+    it("""Case 24: can be used to determine equality, so whether
+          |  than make equals inside of an class,
+          |  it is now an outside concern""".stripMargin) {
       trait Eq[T] {
       }
 
       pending
     }
 
-    it("Case 25: can be used for ordering, in this case how do we sort an Employee") {
+    it("""Case 25: can be used for ordering, in this case how`
+          |  do we sort an Employee""") {
       case class Employee(firstName: String, lastName: String)
       pending
     }

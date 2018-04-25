@@ -53,8 +53,8 @@ class MethodsSpec extends FunSuite with Matchers {
 
 
   test("""Case 4.5: Recursion is supported just like another
-         | language,
-         | we can do a factorial using tail recursion.""".stripMargin) {
+         |  language, we can do a factorial 
+         |  using tail recursion.""".stripMargin) {
 
     def factorial(i: Int):Int = {
       require(i >= 0)
@@ -97,7 +97,7 @@ class MethodsSpec extends FunSuite with Matchers {
 
   test(
     """Case 5.2 Multi-parameter with partial application
-      | partially apply the middle int""".stripMargin) {
+      |  partially apply the middle int""".stripMargin) {
     def multiParameters(w:Int)(x:Int)(y:String, z:String) = {
       y + (w + x) + z
     }
@@ -108,7 +108,7 @@ class MethodsSpec extends FunSuite with Matchers {
 
   test(
     """Case 5.3 Multi-parameter with partial application
-      | partially apply the middle int""".stripMargin) {
+      |  partially apply the middle int""".stripMargin) {
     def multiParameters(w:Int)(x:Int)(y:String, z:String) = {
       y + (w + x) + z
     }
@@ -203,7 +203,7 @@ class MethodsSpec extends FunSuite with Matchers {
   }
 
   test("""Case 10: Careful with types and what gets returned,
-      | numberStatus in this case will return Any""".stripMargin) {
+      |  numberStatus in this case will return Any""".stripMargin) {
     def numberStatus(x:Int) = {
       if (x > 10) "Greater than 10"
       else if (x < 10) "Less than 10"
@@ -211,5 +211,51 @@ class MethodsSpec extends FunSuite with Matchers {
     }
 
     numberStatus(10)
+  }
+
+  test("""Case 11: Apply method does not need be called""".stripMargin) {
+    class Foo(x:Int) {
+      def apply(y:Int) = x + y
+    }
+
+    val foo = new Foo(10)
+    val result1 = foo.apply(20) //with apply
+    val result2 = foo(20)
+    result1 should be (30)
+    result2 should be (30)
+  }
+
+  test("""Case 12: Infix operators. As long as there is a
+          |  method with one parameter, 
+          |  you can use an infix operator""".stripMargin) {
+      class Foo(x:Int) {
+        def bar(y:Int) = x + y
+      }
+    
+      val foo = new Foo(10)
+      val result = foo bar 20 //infix operator
+      result should be (30)
+  }
+
+  test("""Case 13: Infix operator with an operator overloaded
+      |  operator""".stripMargin) {
+      class Foo(x:Int) {
+        def ~(y:Int) = x + y
+      }
+    
+      val foo = new Foo(10)
+      val result = foo ~ 20 //infix operator
+      result should be (30)
+  }
+
+  test("""Case 14: Infix operator with an operator overloaded that
+      |  ends with a ':'""".stripMargin) {
+    class Foo(x:Int) {
+      def ~:(y:Int) = x + y
+    }
+
+    val foo = new Foo(10)
+    val result = 20 ~: foo //infix operator, right associative colon
+    result should be (30)
   }
 }
