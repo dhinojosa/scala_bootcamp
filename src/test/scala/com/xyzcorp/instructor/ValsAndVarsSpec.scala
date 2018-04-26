@@ -2,7 +2,8 @@ package com.xyzcorp.instructor
 
 import org.scalatest.{FunSuite, Matchers}
 
-class ValsAndVarsSpec extends FunSuite with Matchers {
+
+class ValsAndVarsSpec extends FunSuite with Matchers  {
   test("Case 1: Vals are like final") {
     val a = 10
     a should be (10)
