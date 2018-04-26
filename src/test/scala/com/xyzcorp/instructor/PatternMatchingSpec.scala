@@ -2,6 +2,7 @@ package com.xyzcorp.instructor
 
 import org.scalatest.{FunSpec, Matchers}
 
+
 import scala.util.matching.Regex
 
 class PatternMatchingSpec extends FunSpec with Matchers {
@@ -183,24 +184,28 @@ class PatternMatchingSpec extends FunSpec with Matchers {
     it("""Case 23: is rarely used in assignments, it is used inside a match,
         |  which takes the following form, let's start with a Tuple 3
         |  and attempt to match""".stripMargin) {
+
+
+
+      def whatAmI_?(item:Any) = item match {
+          case (x, y) => s"Tuple 2 $x and $y"
+          case (x, y, z) => s"Tuple 3 $x and $y and $z"
+          //case _ => s"That this is the default"
+        }
+
       val item: Any = (1, 1.0, "Wow")
-
-      val result = item match {
-        case (x, y) => s"Tuple 2 $x and $y"
-        case (x, y, z) => s"Tuple 3 $x and $y and $z"
-        case _ => s"That this is the default"
-      }
-
-      result should be("Tuple 3 1 and 1.0 and Wow")
+      whatAmI_?(item) should be("Tuple 3 1 and 1.0 and Wow")
     }
 
     it("""Case 24: Let's do up a replicate method using pattern
         |  matching using recursion""".stripMargin) {
-      pending
 
-      def replicate[A](count: Int, elem: A): List[A] = {
-        ???
-      }
+      def replicate[A](count: Int, elem: A): List[A] =
+        count match {
+          case 0 => Nil
+          case _:Int => elem :: replicate(count - 1, elem)
+        }
+
 
       replicate(0, "Whoa") should be(List())
       replicate(1, "Whoa") should be(List("Whoa"))
@@ -212,10 +217,15 @@ class PatternMatchingSpec extends FunSpec with Matchers {
     it("""Case 25: Recreate the above but be sure that it is done
         |  in a tail-recursive manner""".stripMargin) {
 
-      pending
-
       def replicate[A](count: Int, elem: A): List[A] = {
-        ???
+        import scala.annotation.tailrec
+        @tailrec
+        def repl(c: Int, acc:List[A]): List[A] =
+          count match {
+            case 0 => Nil
+            case _:Int => repl(c - 1, elem :: acc)
+          }
+        repl(count, Nil)
       }
 
       replicate(0, "Whoa") should be(List())
