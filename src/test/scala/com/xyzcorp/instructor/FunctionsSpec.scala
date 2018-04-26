@@ -207,7 +207,6 @@ class FunctionsSpec extends FunSuite with Matchers {
       |  aggregate the collection into one.""".stripMargin) {
 
     val result = List(1,2,3,4,5).foldLeft(0)((total: Int, next:Int) => {
-      println(s"total: $total, next: $next")
       total + next
     })
 
@@ -224,7 +223,6 @@ class FunctionsSpec extends FunSuite with Matchers {
 
   test("""Case 15.1: foldRight""") {
     val result = List(1,2,3,4,5).foldRight(0)((next:Int, total: Int) => {
-      println(s"total: $total, next: $next")
       total + next
     })
 
@@ -243,7 +241,6 @@ class FunctionsSpec extends FunSuite with Matchers {
 
   test("""Case 16: reduceRight""") {
     val result = Vector(4,5,6).reduceRight((next:Int, total: Int) => {
-      println(s"total: $total, next: $next")
       total + next
     })
 
@@ -298,17 +295,16 @@ class FunctionsSpec extends FunSuite with Matchers {
 
     val average = salaries.sum / salaries.size
 
+    average should be (52860)
+
+    val tt: (Int, Int) = list
+      .map(d => d.employees.map(e => e.salary).sum -> d.employees.size)
+      .reduce { (total, next) => (total._1 + next._1) -> (total._2 + next._2) }
 
     //Challenge Acceptance
-    val result2 = list
-      .map(d => d.employees.size -> d.employees.map(e => e.salary).sum)
-      //.map(t => t._2 / t._1)
-        .map{case (sz, sm) => sm /sz}
+    val result2 = tt._1 / tt._2
 
-    average should be (result2)
-
-
-
+    result2 should be (52860)
 
   }
 
@@ -364,7 +360,7 @@ class FunctionsSpec extends FunSuite with Matchers {
   }
 
   test("""Case 24: groupBy will categorize a collection by a function, and return a
-      |  map where the keys were derived by that function""".stripMargin) {
+         |  map where the keys were derived by that function""".stripMargin) {
 
     val lyrics = List(
       "I see trees of green",
@@ -379,6 +375,20 @@ class FunctionsSpec extends FunSuite with Matchers {
         .flatMap(_.split(" "))
         .map(_.toLowerCase)
         .groupBy(w => w.head)
+  }
+
+  test("""Case 24: groupBy will categorize a collection by a function,
+      |  and return a
+      |  map where the keys were derived by that function, in this case,
+      |  we will derive a word count""".stripMargin) {
+
+    val lyrics = List(
+      "I see trees of green",
+      "Red roses too",
+      "I see them bloom",
+      "for me and you",
+      "And I think to myself",
+      "What a wonderful world")
 
     val wordCount = lyrics
       .flatMap(_.split(" "))
@@ -386,8 +396,8 @@ class FunctionsSpec extends FunSuite with Matchers {
       .groupBy(identity)
       .mapValues(_.size)
       .toList
-      .sortBy {case (_, n) => n}
-      //.sortBy(t => t._2)
+      .sortBy {case (_, n) => n} //Partial Function
+      //.sortBy(t => t._2)       //Non Partial Function
     wordCount
 
   }
@@ -395,7 +405,7 @@ class FunctionsSpec extends FunSuite with Matchers {
   test("""Case 25: mkString will create a string from a
       |  collections elements, and offers
       |  multiple ways to do so""".stripMargin) {
-    pending
+    List(1,2,3).mkString("{", ",", "}")
   }
 
   test("""Case 26: collect will apply a partial function to all elements
@@ -423,16 +433,17 @@ class FunctionsSpec extends FunSuite with Matchers {
 
   test("""Case 27: scan is like a reduce but maintains a running total
       |  with each iteration""".stripMargin) {
-    pending
+    (1 to 5).scan(1)(_ * _).apply(5) should be (120)
   }
 
   test("""Case 28: zip will interweave two collections together leaving a tuple""") {
-    pending
+    (1 to 1000).zip(List('a', 'b', 'c')) should be (Seq((1,'a'), (2, 'b'), (3, 'c')))
   }
 
   test("""Case 29: view will not immediately evaluate a chain until a terminal
       |  operation is called, like reduce, count, or force.  Here lets take a
-      |  range of 1 to 10000000 and lazy map and multiply by 4000""".stripMargin) {
+      |  range of 1 to 10000000 and lazy map and multiply
+      |  by 4000""".stripMargin) {
     val result = (1 to 10000000).view.map(x => x * 4000).take(4).force.toList
     result should contain inOrder(4000, 8000, 12000, 16000)
   }
@@ -440,10 +451,11 @@ class FunctionsSpec extends FunSuite with Matchers {
   test("""Case 30: sorted will sort the collection based on an implicit ordering
       |  and return that ordered collection""".stripMargin) {
     val list = List("bassoon", "bass", "violin", "guitar", "cello")
-    pending
+    list.sorted should contain inOrder("bass", "bassoon",
+                                       "cello", "guitar", "violin")
   }
 
-  test("""Case 40: sortBy will also sort the collection based on an
+  test("""Case 31: sortBy will also sort the collection based on an
       |  implicit rule, but will apply a function first, let's find a way
       |  to sort by last name and take the first two last names""".stripMargin) {
 
@@ -454,20 +466,32 @@ class FunctionsSpec extends FunSuite with Matchers {
       "Nikola Tesla",
       "Bob Marley")
 
-    pending
+    val result = names
+      .map(_.split(" "))
+      .sortBy(_.last)
+      .map(_.mkString(" "))
+
+    result should contain inOrder("Louis Armstrong",
+                                  "Albert Einstein",
+                                  "Ella Fitzgerald",
+                                  "Tim Berners Lee",
+                                  "Bob Marley",
+                                  "Nikola Tesla")
+
   }
 
-  test("""Case 41: Partial Applications with a multi-parameter list
+  test("""Case 32: Partial Applications with a multi-parameter list
       |  can be knocked out to provide only some of the entries, entries
       |  that you can fill in later. This is how we can convert
       |  a method to a function""".stripMargin) {
 
-    def multiParameters(w:Int)(x:Int)(y:String, z:String) = y + (w + x) + z
+    def multiParameters(w:Int)(x:Int)(y:String, z:String)
+              = y + (w + x) + z
     val function = multiParameters(10)(20)_
     function("{", "}") should be ("{30}")
   }
 
-  test("""Case 42: In multi-parameter lists you can use a function. Typically
+  test("""Case 33: In multi-parameter lists you can use a function. Typically
       |  the function is in the last parameter group, but it's your code,
       |  you can put it wherever you please""".stripMargin) {
     def multiParametersWithAFunction(w:Int)(x:Int)(f: Int => String) = f(w * x)
@@ -476,14 +500,14 @@ class FunctionsSpec extends FunSuite with Matchers {
   }
 
 
-  test("""Case 43: We will use a by name parameter to
+  test("""Case 34: We will use a by name parameter to
           |  create a method that will take a block and
           |  will return a tuple of the time that it took
           |  to execute the block and the block's result""".stripMargin) {
     pending
   }
 
-  test("""Case 44: Look up in the API a function in a collection that interests you,
+  test("""Case 34: Look up in the API a function in a collection that interests you,
       |  figure it out with one or more tests, pair with someone if you
       |  would like""".stripMargin) {
     pending

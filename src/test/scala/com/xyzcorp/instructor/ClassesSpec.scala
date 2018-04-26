@@ -7,7 +7,7 @@ class ClassesSpec extends FunSuite with Matchers {
   test("""Case 1: Create a class, and the class should be
          |  instantiable with the elements, but without a val
          |  I cannot get information. Let's create a stamp with elements
-         |  name and year""") {
+         |  name and year""".stripMargin) {
       val jimiHendrixStamp = new Stamp("Jimi Hendrix", 2014)
       jimiHendrixStamp.name should be ("Jimi Hendrix")
       jimiHendrixStamp.year should be (2014)
