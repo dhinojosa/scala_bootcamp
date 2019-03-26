@@ -522,3 +522,4 @@ project/build.properties
 .ensime_cache/index-2.0.4/segments_1
 .ensime_cache/index-2.0.4/write.lock
 project/.ensime
+.ensime_cache
