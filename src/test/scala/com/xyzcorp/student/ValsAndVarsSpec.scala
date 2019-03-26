@@ -24,7 +24,9 @@ class ValsAndVarsSpec extends FunSuite with Matchers {
   }
 
   test("Case 5: lazy val forward reference") {
-    pending
+    lazy val a = 10 + b
+    lazy val b = 19
+    a should be (29)
   }
 
   test("Case 6: Exceptions in lazy val") {
