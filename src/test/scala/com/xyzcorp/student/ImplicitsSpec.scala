@@ -1,6 +1,8 @@
 package com.xyzcorp.student
 
+
 import org.scalatest.{FunSpec, Matchers}
+
 
 class ImplicitsSpec extends FunSpec with Matchers {
 
@@ -17,7 +19,8 @@ class ImplicitsSpec extends FunSpec with Matchers {
         |  one group would """.stripMargin) {
       implicit val rate: Int = 100
 
-      def calculatePayment(hours: Int)(implicit currentRate: Int) = hours * rate
+      def calculatePayment(hours: Int)(implicit currentRate: Int) = hours *
+        currentRate
 
       calculatePayment(50) should be(5000)
     }
@@ -98,7 +101,9 @@ class ImplicitsSpec extends FunSpec with Matchers {
       calcYearRate(60000) should be("65000 Euro")
     }
 
-    it("""Case 7: can also be replaced with default parameters, choose accordingly""") {
+    it(
+      """Case 7: can also be replaced with default parameters, choose accordingly""")
+    {
       def calcYearRate(amount: Int, bonusAmt: Int = 5000,
                        currency: String = "Euro") = {
         amount + bonusAmt + " " + currency
@@ -112,8 +117,8 @@ class ImplicitsSpec extends FunSpec with Matchers {
       """Case 8: If you have a List[String] implicitly will it try
         |  to inject into a List[Double]?""".stripMargin) {
 
-      implicit val listOfString = List("Foo", "Bar", "Baz")
-      implicit val listOfDouble = List(1.0, 2.0, 3.0)
+      implicit val listOfString: List[String] = List("Foo", "Bar", "Baz")
+      implicit val listOfDouble: List[Double] = List(1.0, 2.0, 3.0)
 
       val result = implicitly[List[Double]]
 
@@ -127,14 +132,14 @@ class ImplicitsSpec extends FunSpec with Matchers {
         |  a class that we don't have access to, like isOdd/isEven
         |  in the Int class.  This is what we call implicit wrappers.
         |  First we will use a conversion method.""".stripMargin) {
-      class IntWrapper(x:Int) {
+      class IntWrapper(x: Int) {
         def isOdd: Boolean = x % 2 != 0
         def isEven: Boolean = !isOdd
       }
 
       import scala.language.implicitConversions
 
-      implicit def int2IntWrapper(x:Int):IntWrapper = new IntWrapper(x)
+      implicit def intToWrapper(x: Int): IntWrapper = new IntWrapper(x)
 
       10.isOdd should be (false)
       10.isEven should be (true)
@@ -144,14 +149,14 @@ class ImplicitsSpec extends FunSpec with Matchers {
     it(
       """Case 10: Implicit wrappers can be created using
         | a function and is often easier to mental map.""".stripMargin) {
-      class IntWrapper(x:Int) {
+      class IntWrapper(x: Int) {
         def isOdd: Boolean = x % 2 != 0
         def isEven: Boolean = !isOdd
       }
 
       import scala.language.implicitConversions
 
-      implicit def int2IntWrapper: Int => IntWrapper = (x:Int) => new IntWrapper(x)
+      implicit val int2IntWrapper: Int => IntWrapper = (x: Int) => new IntWrapper(x)
 
       10.isOdd should be (false)
       10.isEven should be (true)
@@ -166,7 +171,7 @@ class ImplicitsSpec extends FunSpec with Matchers {
         |     with the implicit outer scope""".stripMargin) {
 
       import scala.language.implicitConversions
-      implicit class IntWrapper(x:Int) {
+      implicit class IntWrapper(x: Int) {
         def isOdd: Boolean = x % 2 != 0
         def isEven: Boolean = !isOdd
       }
@@ -175,16 +180,18 @@ class ImplicitsSpec extends FunSpec with Matchers {
       10.isEven should be (true)
     }
 
-    it("""Lab: Create an implicit wrapper that has a method called exclaim.
-         |  When exclaim is called on any object. It will return the
-         |  toString implementation but with an exclamation mark at the end.
-         |
-         |  For example:
-         |  10.exclaim => 10!
-         |  "Hello".exclaim => Hello!
-         |  List(1,2,3).exclaim => List(1,2,3)!
-         |
-         |  Note: You can include everything you need inside of this test.""".stripMargin) {
+    it(
+      """Lab: Create an implicit wrapper that has a method called exclaim.
+        |  When exclaim is called on any object. It will return the
+        |  toString implementation but with an exclamation mark at the end.
+        |
+        |  For example:
+        |  10.exclaim => 10!
+        |  "Hello".exclaim => Hello!
+        |  List(1,2,3).exclaim => List(1,2,3)!
+        |
+        |  Note: You can include everything you need inside of this test."""
+        .stripMargin) {
       pending
     }
 
@@ -195,9 +202,7 @@ class ImplicitsSpec extends FunSpec with Matchers {
 
       import scala.language.implicitConversions
 
-      sealed abstract class Currency
-      case class Dollar(value: Int) extends Currency
-      case class Yen(value: Int) extends Currency
+      case class Dollar(value: Int)
 
       implicit def int2Dollar(i: Int): Dollar = Dollar(i)
 
@@ -214,22 +219,20 @@ class ImplicitsSpec extends FunSpec with Matchers {
         | in this scenario we will use a function""".stripMargin) {
       import scala.language.implicitConversions
 
-      sealed abstract class Currency
-      case class Dollar(value:Int) extends Currency
-      case class Yuan(value:Int) extends Currency
-      case class Euro(value:Int) extends Currency
+      case class Dollar(value: Int)
 
-      def combine(x:Dollar, y:Dollar):Dollar = Dollar(x.value + y.value)
+      def combine(x: Dollar, y: Dollar): Dollar = Dollar(x.value + y.value)
 
-      implicit val int2Dollar: Int => Dollar = (i:Int) => Dollar(i)
+      implicit val int2Dollar: Int => Dollar = (i: Int) => Dollar(i)
 
-      combine(Dollar(100), Dollar(200)) should be (Dollar(300))
-      combine(100, 200) should be (Dollar(300))
+      combine(Dollar(100), Dollar(200)) should be(Dollar(300))
+      combine(100, 200) should be(Dollar(300))
 
     }
 
     it(
-      """Case 14: is done automatically in Scala because what is inside of scala.Predef, for example,
+      """Case 14: is done automatically in Scala because what is inside of
+        |  scala.Predef, for example,
         |  it explains how be can set a scala.Float , and there is java.lang.Float,
         |  java primitive float.
         |  We can investigate this by looking at
@@ -262,7 +265,7 @@ class ImplicitsSpec extends FunSpec with Matchers {
 
       }
 
-      import MyPredef._
+      import MyPredef.IntWrapper
       29.isEven should be(false)
     }
 
@@ -287,10 +290,10 @@ class ImplicitsSpec extends FunSpec with Matchers {
     it(
       """Case 17: can also use a package object
         |  to store some of these implicits""".stripMargin) {
-      def concatAll(xs:List[String]) = xs.reduce(_ + _)
+      def concatAll(xs: List[String]) = xs.reduce(_ + _)
 
-      concatAll((3, "Hello")) should be ("HelloHelloHello")
-      concatAll(3 -> "Hello") should be ("HelloHelloHello")
+      concatAll((3, "Hello")) should be("HelloHelloHello")
+      concatAll(3 -> "Hello") should be("HelloHelloHello")
     }
 
     it(
@@ -298,7 +301,8 @@ class ImplicitsSpec extends FunSpec with Matchers {
         |  java.time.ZoneId.getAvailableZoneIds, from a Java collection to
         |  a Scala collection. The do something fun with it like find all the
         |  time zones in Asia and sort them.  Everything can be
-        |  done inside of this test. Consider REPL as a handy tool.""".stripMargin) {
+        |  done inside of this test. Consider REPL as a handy tool."""
+        .stripMargin) {
 
       pending
     }
@@ -327,6 +331,8 @@ class ImplicitsSpec extends FunSpec with Matchers {
       hireEmployee("Joe Employee") should be("Hired an employee Joe Employee")
     }
   }
+
+
 
   describe(
     """Context Bounds works so that there is a type A, and it requires a B[A] somewhere
