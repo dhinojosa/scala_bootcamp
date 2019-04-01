@@ -5,7 +5,6 @@ import java.time.LocalDate
 import org.scalatest.{FunSuite, Matchers}
 
 import scala.collection.immutable.{HashSet, LinearSeq, Queue, TreeSet}
-import scala.collection.mutable.ArrayBuffer
 
 class CollectionsSpec extends FunSuite with Matchers {
   test(
@@ -137,7 +136,7 @@ class CollectionsSpec extends FunSuite with Matchers {
       |  find the smallest element
       |  of the set. As far as API is concerned
       |  you should expect no difference.""".stripMargin) {
-    val set = TreeSet(1, 2, 3, 4, 5, 6, 8)
+    val set = TreeSet.apply(1, 2, 3, 4, 5, 6, 8)
     set.contains(4) should be(true)
     set.apply(8) should be(true) //huh?
     set.apply(10) should be(false) //huh?
@@ -164,12 +163,14 @@ class CollectionsSpec extends FunSuite with Matchers {
       |  from a method. Here is a ListBuffer which allows you to create a
       |  mutable List changing what you need. Note the API differences
       |  with immutable. Here is an ArrayBuffer""".stripMargin) {
+
+    import scala.collection.mutable.ArrayBuffer
+
     val ab = ArrayBuffer[Int](10, 20)
     ab += 30
     ab += 40
     ab.prepend(5)
 
     ab should be(ArrayBuffer(5, 10, 20, 30, 40))
-
   }
 }
