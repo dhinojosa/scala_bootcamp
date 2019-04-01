@@ -11,8 +11,13 @@ class FunctionsSpec extends FunSuite with Matchers {
       override def apply(v1: String): Int = v1.length
     }
 
-    def foo(s:String) = s.length
-    val f15: String => Int = foo _
+    val f2:Function1[String, Int] = new Function1[String, Int] {
+      override def apply(v1: String): Int = v1.length
+    }
+
+    val f3 = new Function1[String, Int] {
+      override def apply(v1: String): Int = v1.length
+    }
 
     f1("Hello") should be(5)
   }
@@ -71,9 +76,11 @@ class FunctionsSpec extends FunSuite with Matchers {
          |  lessThan to determine if a given Int temperature is freezing.
          |  Celcius freezing temperature is 0, Fahrenheit is 32.""".stripMargin) {
 
-    pending
-
-    def lessThan(x:Int):Int => Boolean = ???
+    def lessThan(x:Int) = (y:Int) => y < x
+    val isFreezingCelcius = lessThan(0)
+    val isFreezingFahrenheit = lessThan(32)
+    isFreezingFahrenheit(25) should be (true)
+    isFreezingCelcius(25) should be (false)
   }
 
   test(
@@ -127,6 +134,7 @@ class FunctionsSpec extends FunSuite with Matchers {
     val newFunction: ((String, Int)) => String =
       tupleFirst.andThen(getFirstThreeLetters)
   }
+
 
 
   test("""Case 10: Map will apply the given function on all elements of a
@@ -198,21 +206,25 @@ class FunctionsSpec extends FunSuite with Matchers {
 
   test("""Case 17: flatMap also wonderful for digging
          |  into one-to-many object graphs""".stripMargin) {
-    class Employee(val firstName:String, val lastName:String)
-    class Manager(firstName:String, lastName:String, val employees:List[Employee])
-      extends Employee(firstName, lastName)
+    class Employee(val firstName:String, val lastName:String, val wage:Double)
+    class Manager(firstName:String, lastName:String, wage:Double, val employees:List[Employee])
+      extends Employee(firstName, lastName, wage)
 
-    val employees1 = List[Employee](new Employee("Simon", "Simons"),
-      new Employee("Roger", "Japan"))
+    val employees1 = List[Employee](new Employee("Simon", "Simons", 10000),
+      new Employee("Roger", "Japan", 12000))
 
-    val employees2 = List[Employee](new Employee("Anne", "Norway"),
-      new Employee("Yasmina", "Greco"),
-      new Employee("Carlos", "Canada"))
+    val employees2 = List[Employee](new Employee("Anne", "Norway", 13000),
+      new Employee("Yasmina", "Greco", 14000),
+      new Employee("Carlos", "Canada", 13500))
 
-    val manager1 = new Manager("Bjarne", "Strousoup", employees1)
-    val manager2 = new Manager("Grace", "Hopper", employees2)
+    val manager1 = new Manager("Bjarne", "Strousoup", 15000, employees1)
+    val manager2 = new Manager("Grace", "Hopper", 15000, employees2)
 
-    val result: Seq[Employee] = List(manager1, manager2).flatMap(ma => ma.employees)
+    val result = List(manager1, manager2)
+      .flatMap(ma => ma :: ma.employees)
+      .map(e => e.wage).sum
+
+    result should be (List(10000, 12000, 13000, 14000, 13500, 15000, 15000).sum)
   }
 
   test("""Case 18: flatMap of Options will filter out all Nones and Keep the Somes""") {
@@ -225,7 +237,7 @@ class FunctionsSpec extends FunSuite with Matchers {
          |  but unlike the map function, it will not return anything
          |  since the return type is Unit, which
          |  is like a void return type in Java, C++""".stripMargin) {
-    List(1,2,3) map println
+    List(1,2,3) foreach println
   }
 
 
@@ -321,7 +333,7 @@ class FunctionsSpec extends FunSuite with Matchers {
     result should be (List((2, "Bar"), (3, "Baz"), (1, "Foo")))
   }
 
-  test("""Lab: Functional challenge. Using the fuctions we covered, write
+  test("""Lab: Functional challenge. Using the functions we covered, write
          |  factorial functionally. No loops, no recursion. Hint: Most of the
          |  methods in BigInt are the same as Int so you can keep it simple.
          |  """.stripMargin) {
