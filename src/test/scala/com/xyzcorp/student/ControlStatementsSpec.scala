@@ -75,14 +75,16 @@ class ControlStatementsSpec extends FunSuite with Matchers {
   }
 
   test("Case 7: Create a simple for comprehension") {
-    pending
+     val result = for (a <- 1 to 5) yield a * 3
+     result should contain inOrder (3, 6, 9, 12, 15)
   }
 
   test(
     """Lab: Take the following two lists and combine them
-      |  as a sum using a for comprehension""".stripMargin) {
+       |  as a sum using a for comprehension""".stripMargin) {
 
     pending
+
     val xs = List(1,2,3,4)
     val ys = List(10,20,30,40)
 
